@@ -12,6 +12,7 @@
 
 <body>
 
+
     <div class="container">
 
         <center>
@@ -26,6 +27,11 @@
         </center>
 
     </div>
+    <audio th:src="@{/assets/audio/bean.mp3}" autoplay loop>
+        <p>If you are reading this, it is because your browser does not support the audio element.     </p>
+        <embed th:src="@{/assets/audio/bean.mp3}" width="180" height="90" hidden="true" />
+        </audio>
 
 </body>
+
 </html>
