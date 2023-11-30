@@ -1,0 +1,23 @@
+   /* Basic styling for the board */
+   table {
+    border-collapse: collapse;
+    margin: 50px auto;
+    transform: perspective(800px) rotateX(60deg) rotateZ(2deg); /* Apply perspective and rotate for angled appearance */
+    background-color: black;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* Apply box-shadow for elevation */
+  }
+
+  td {
+    width: 70px; /* Adjust this value to change the cell width */
+    height: 70px; /* Adjust this value to change the cell height */
+    border: 1px solid white;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  #table2,#table3,#table4 {
+ 
+    margin-top: -160px;
+  }
+
+
