@@ -152,7 +152,7 @@
                             <td onclick="changeColor(this,4,3,0)" id="430"></td>
                             <td onclick="changeColor(this,4,3,1)" id="431"></td>
                             <td onclick="changeColor(this,4,3,2)" id="432"></td>
-                            <td onclick="changeColor(this,4,3,3)" id="433"></td>
+                            <td onclick="changeColor(this,4,3,3)" id=""></td>
                         </tr>
                         </tbody>
                     </table>
@@ -200,40 +200,7 @@
 
 
 
-    <script>
-        let clickCount = 0;
-
-
-        let lastColor = null;
-        function changeColor(cell,table_no, row, col) {
-        console.log(`Clicked cell: Table:${table_no} ${row},${col}`);
-          clickCount++;
-
-          if (cell.style.backgroundColor !== '' && cell.style.backgroundColor !== 'transparent') {
-          console.log("Already Changed");
-                 return;
-            }
-
-            if (lastColor === 'blue') {
-                cell.style.backgroundColor = 'red';
-                cell.textContent = 'X';
-                 cell.style.color = 'white';
-        cell.style.fontSize = '20px';
-                lastColor = 'red';
-            } else {
-                cell.style.backgroundColor = 'blue';
-                cell.textContent = 'O';
-                 cell.style.color = 'white';
-                 cell.style.fontSize = '20px';
-                lastColor = 'blue';
-            }
-
-
-        }
-
-
-
-
+    <script th:src="@{/assets/js/game.js}">
       </script>
 <audio th:src="@{/assets/audio/bean.mp3}" autoplay loop>
     <p>If you are reading this, it is because your browser does not support the audio element.     </p>
