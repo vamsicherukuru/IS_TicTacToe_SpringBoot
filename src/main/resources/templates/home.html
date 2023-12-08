@@ -8,6 +8,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+
+
+
+    <script>
+        function showNameInput() {
+            var difficultySelect = document.getElementById("difficultyLevel");
+            var playerNameInput = document.getElementById("playerNameInput");
+
+            if (difficultySelect.value !== "default") {
+                playerNameInput.style.display = "block";
+            } else {
+                playerNameInput.style.display = "none";
+            }
+        }
+
+
+
+        function onSubmitForm(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get selected difficulty level and player name
+            var difficulty = document.getElementById("difficultyLevel").value;
+            var playerName = document.getElementById("playerName").value;
+
+            // Display the stored values in the console
+            console.log("Difficulty Level:", difficulty);
+            console.log("Player Name:", playerName);
+        }
+    </script>
 </head>
 
 <body>
@@ -19,18 +48,26 @@
          <div class="elements">
             <img th:src="@{/assets/images/All-in-C.png}" id="logo">
             <h4>Group 9 Gaming Center</h4>
-          <form >
-              <input type="text" name="playerName" class="custom-input" placeholder="Enter Player Name"><br><br>
-              <a th:href="@{/gameplay}" type="submit" class="btn btn-success startgamebtn">Start Game</a>
+          <form th:action="@{/gameplay}" method="GET">
+              <select name="difficultyLevel" id="difficultyLevel" class="form-select" aria-label="Select Difficulty Level" onchange="showNameInput()">
+                  <option value="default">Select Difficulty Level</option>
+                  <option value="easy">Easy</option>
+                  <option value="difficult">Difficult</option>
+                  <option value="insane">Insane</option>
+              </select>
+
+                <div id="playerNameInput" style="display: none;">
+                    <input type="text" name="playerName" class="custom-input" placeholder="Enter Player Name"><br><br>
+                    <button type="submit" class="btn btn-success startgamebtn">Start Game</button>
+                </div>
+
+
           </form>
          </div>
         </center>
 
     </div>
-    <audio th:src="@{/assets/audio/bean.mp3}" autoplay loop>
-        <p>If you are reading this, it is because your browser does not support the audio element.     </p>
-        <embed th:src="@{/assets/audio/bean.mp3}" width="180" height="90" hidden="true" />
-        </audio>
+
 
 </body>
 
