@@ -120,14 +120,10 @@ function changeColor(cell, table_no, row, col) {
         cell.style.fontSize = '20px';
         lastColor = 'red';
         turn = 1
+           computerMove();
     } else if(turn==1) {
-        cell.style.backgroundColor = 'blue';
-        cell.textContent = 'O';
-        emptyArray4x4[table_no][row][col] = 'O'; // Fixed indexing here
-        cell.style.color = 'white';
-        cell.style.fontSize = '20px';
-        lastColor = 'blue';
-        turn = 0;
+    console.log("It's the computer's turn");
+
     }else{
 
 
@@ -156,3 +152,107 @@ function changeColor(cell, table_no, row, col) {
         // Perform actions when a winner is found (e.g., display a message, end the game, etc.)
     }
 }
+
+
+
+
+
+
+
+
+
+// Minimax algorithm for finding the best move
+function minimax(board, depth, isMaximizing) {
+    // Base case: check for a winner or if the depth limit is reached
+    if (checkWinner(board) || depth === 0) {
+        if (checkWinner(board)) {
+            if (lastColor === 'red') {
+                return -10 + depth; // If 'X' (red) wins, return a score based on depth
+            } else {
+                return 10 - depth; // If 'O' (blue) wins, return a score based on depth
+            }
+        }
+        return 0; // If the game is drawn
+    }
+
+    if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                for (let k = 0; k < board[i][j].length; k++) {
+                    if (board[i][j][k] === '') {
+                        board[i][j][k] = 'O';
+                        bestScore = Math.max(bestScore, minimax(board, depth - 1, false));
+                        board[i][j][k] = ''; // Undo the move
+                    }
+                }
+            }
+        }
+        return bestScore;
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                for (let k = 0; k < board[i][j].length; k++) {
+                    if (board[i][j][k] === '') {
+                        board[i][j][k] = 'X';
+                        bestScore = Math.min(bestScore, minimax(board, depth - 1, true));
+                        board[i][j][k] = ''; // Undo the move
+                    }
+                }
+            }
+        }
+        return bestScore;
+    }
+}
+
+
+
+
+
+
+
+function computerMove() {
+    let bestScore = -Infinity;
+    let bestMove;
+
+    for (let i = 0; i < emptyArray4x4.length; i++) {
+        for (let j = 0; j < emptyArray4x4[i].length; j++) {
+            for (let k = 0; k < emptyArray4x4[i][j].length; k++) {
+                if (emptyArray4x4[i][j][k] === '') {
+                    emptyArray4x4[i][j][k] = 'O';
+                    let score = minimax(emptyArray4x4, 2, false); // Set the depth here
+                    emptyArray4x4[i][j][k] = ''; // Undo the move
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = { table_no: i, row: j, col: k };
+                    }
+                }
+            }
+        }
+    }
+
+    // Construct the ID based on table_no, row, and col
+    const cellId = `${bestMove.table_no}${bestMove.row}${bestMove.col}`;
+    console.log(cellId);
+
+    // Select the cell using the constructed ID
+    const cell = document.getElementById(cellId);
+
+    // Check if the cell exists and perform necessary actions
+    if (cell) {
+        // Cell exists, perform actions on the cell
+        cell.style.backgroundColor = 'blue'; // Simulate computer move UI update
+        cell.textContent = 'O';
+        emptyArray4x4[bestMove.table_no][bestMove.row][bestMove.col] = 'O'; // Update game state
+        cell.style.color = 'white';
+        cell.style.fontSize = '20px';
+        lastColor = 'blue';
+        turn = 0; // Set turn back to 0 for the human's move
+    } else {
+        // Cell doesn't exist, handle the error or perform appropriate actions
+        console.log('Cell is null. Invalid move.');
+    }
+}
+
+
