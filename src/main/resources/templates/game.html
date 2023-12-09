@@ -42,6 +42,9 @@
               <div class="column">
                 <!-- Content for the first column -->
                 <img th:src="@{/assets/images/All-in-C.png}" id="logo">
+                  <br>
+                  <h1 id="current-player-text">Current Player: You</h1> <!-- Display current player information -->
+
               </div>
             </div>
 
@@ -208,9 +211,18 @@
     </div>
 
 
-
-
-
+<audio id="lostSound">
+    <source th:src="@{/assets/audio/gamelost.wav}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<audio id="clickSound">
+    <source th:src="@{/assets/audio/click.wav}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<audio id="winSound">
+    <source th:src="@{/assets/audio/gamewon2.wav}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
     <script th:src="@{/assets/js/game.js}">
       </script>
 
