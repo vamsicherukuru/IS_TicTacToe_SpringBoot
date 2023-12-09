@@ -13,6 +13,12 @@ function getCurrentPlayer() {
 function updateCurrentPlayerText() {
     const currentPlayerText = document.getElementById('current-player-text');
     currentPlayerText.textContent = `Current Player: ${getCurrentPlayer()}`;
+    if(getCurrentPlayer() === 'Computer'){
+            currentPlayerText.textContent=`Current Player: Computer (Please wait...)`;
+    }
+
+
+
 }
 
 
@@ -322,6 +328,7 @@ function minimax(board, depth, alpha, beta, isMaximizing) {
         return bestScore;
     }
 }
+
 
 
 function computerMove() {
