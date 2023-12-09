@@ -1,6 +1,7 @@
 // Get the URL parameters
 const urlParams = new URLSearchParams(window.location.search);
 const difficultyLevel = urlParams.get('difficultyLevel');
+const playerName = urlParams.get('playerName');
 
 // Function to determine depth based on difficulty level
 function determineDepth(difficulty) {
@@ -165,7 +166,7 @@ function changeColor(cell, table_no, row, col) {
 
                         console.log("We have a winner!");
 
-                            showResultMessage('X');
+                            showResultMessage(playerName);
                             console.log(turn);
                              turn = -1; // Set turn to a value that won't allow further moves
                                  return; // Display the correct winner
