@@ -1,6 +1,42 @@
+// Get the URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const difficultyLevel = urlParams.get('difficultyLevel');
+
+// Function to determine depth based on difficulty level
+function determineDepth(difficulty) {
+    switch (difficulty) {
+        case 'easy':
+            return 0; // Set depth to an appropriate value for the 'easy' difficulty
+        case 'difficult':
+            return 1; // Set depth to an appropriate value for the 'medium' difficulty
+        case 'insane':
+            return 2; // Set depth to 1 for the 'difficult' difficulty
+        default:
+            return 1; // Set a default depth value if the difficulty level is not recognized
+    }
+}
+
+// Usage of the determineDepth function to set the depth
+const depth = determineDepth(difficultyLevel);
+
+
+
+
+
+
+
+
+
+
+
 let turn = 0;
 let lastColor = null;
-let winneris = '';
+
+
+
+
+
+
 let emptyArray4x4 = [
     [['', '', '', ''], ['', '', '', ''], ['', '', '', ''], ['', '', '', '']],
     [['', '', '', ''], ['', '', '', ''], ['', '', '', ''], ['', '', '', '']],
@@ -97,10 +133,13 @@ function showResultMessage(winner) {
     const resultMessage = document.querySelector('.result-message');
     const resultText = document.getElementById('result-text');
 
-    resultText.textContent = winner + ' won the game!';
-    resultMessage.classList.add('show');
-}
 
+    resultText.textContent = winner+ ' won the game!'; // Computer (O) wins
+
+
+    resultMessage.classList.add('show');
+
+}
 
 
 
@@ -119,7 +158,28 @@ function changeColor(cell, table_no, row, col) {
         cell.style.color = 'white';
         cell.style.fontSize = '20px';
         lastColor = 'red';
+         // Check for a winner after each move
+                    let winnerExists = checkWinner(emptyArray4x4);
+                    console.log(emptyArray4x4);
+                    if (winnerExists) {
+
+                        console.log("We have a winner!");
+
+                            showResultMessage('X');
+                            console.log(turn);
+                             turn = -1; // Set turn to a value that won't allow further moves
+                                 return; // Display the correct winner
+
+                        // Perform actions when a winner is found (e.g., display a message, end the game, etc.)
+                    }
+
         turn = 1
+
+
+
+
+
+
            computerMove();
     } else if(turn==1) {
     console.log("It's the computer's turn");
@@ -140,39 +200,69 @@ function changeColor(cell, table_no, row, col) {
     }
 
 
-    // Check for a winner after each move
-    let winnerExists = checkWinner(emptyArray4x4);
-    console.log(emptyArray4x4);
-    if (winnerExists) {
-    turn = -1;
-        console.log("We have a winner!");
 
- showResultMessage(lastColor === 'red' ? 'X' : 'O'); // Display the correct winner
-
-        // Perform actions when a winner is found (e.g., display a message, end the game, etc.)
-    }
 }
 
 
 
 
+// Evaluation function for the board
+function evaluateBoard(board) {
+    // A simple evaluation function that counts the number of rows, columns, and diagonals containing 'O' and 'X'
+    let score = 0;
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            // Check rows and columns
+            if (board[i][j].includes('O')) score++;
+            if (board[i][j].includes('X')) score--;
+
+            // Check depth
+            let depth = [];
+            for (let k = 0; k < board[i].length; k++) {
+                depth.push(board[k][j][i]);
+            }
+            if (depth.includes('O')) score++;
+            if (depth.includes('X')) score--;
+
+            // Check diagonals in the same level
+            if (i === j) {
+                let diagonalSameLevel = [];
+                for (let k = 0; k < board[i].length; k++) {
+                    diagonalSameLevel.push(board[i][k][k]);
+                }
+                if (diagonalSameLevel.includes('O')) score++;
+                if (diagonalSameLevel.includes('X')) score--;
+            }
+
+            // Check other diagonal in the same level
+            if (i + j === board.length - 1) {
+                let otherDiagonalSameLevel = [];
+                for (let k = 0; k < board[i].length; k++) {
+                    otherDiagonalSameLevel.push(board[i][k][board.length - 1 - k]);
+                }
+                if (otherDiagonalSameLevel.includes('O')) score++;
+                if (otherDiagonalSameLevel.includes('X')) score--;
+            }
+        }
+    }
+
+    return score;
+}
 
 
 
 
-
-// Minimax algorithm for finding the best move
-function minimax(board, depth, isMaximizing) {
-    // Base case: check for a winner or if the depth limit is reached
+function minimax(board, depth, alpha, beta, isMaximizing) {
     if (checkWinner(board) || depth === 0) {
         if (checkWinner(board)) {
             if (lastColor === 'red') {
-                return -10 + depth; // If 'X' (red) wins, return a score based on depth
+                return -10 + depth; // 'X' (red) wins
             } else {
-                return 10 - depth; // If 'O' (blue) wins, return a score based on depth
+                return 10 - depth; // 'O' (blue) wins
             }
         }
-        return 0; // If the game is drawn
+        return evaluateBoard(board); // Use the evaluation function to get the score
     }
 
     if (isMaximizing) {
@@ -182,8 +272,13 @@ function minimax(board, depth, isMaximizing) {
                 for (let k = 0; k < board[i][j].length; k++) {
                     if (board[i][j][k] === '') {
                         board[i][j][k] = 'O';
-                        bestScore = Math.max(bestScore, minimax(board, depth - 1, false));
+                        let score = minimax(board, depth - 1, alpha, beta, false);
                         board[i][j][k] = ''; // Undo the move
+                        bestScore = Math.max(bestScore, score);
+                        alpha = Math.max(alpha, bestScore);
+                        if (beta <= alpha) {
+                            break; // Beta cutoff
+                        }
                     }
                 }
             }
@@ -196,8 +291,13 @@ function minimax(board, depth, isMaximizing) {
                 for (let k = 0; k < board[i][j].length; k++) {
                     if (board[i][j][k] === '') {
                         board[i][j][k] = 'X';
-                        bestScore = Math.min(bestScore, minimax(board, depth - 1, true));
+                        let score = minimax(board, depth - 1, alpha, beta, true);
                         board[i][j][k] = ''; // Undo the move
+                        bestScore = Math.min(bestScore, score);
+                        beta = Math.min(beta, bestScore);
+                        if (beta <= alpha) {
+                            break; // Alpha cutoff
+                        }
                     }
                 }
             }
@@ -207,22 +307,18 @@ function minimax(board, depth, isMaximizing) {
 }
 
 
-
-
-
-
-
 function computerMove() {
     let bestScore = -Infinity;
-    let bestMove;
+    let bestMove = { table_no: -1, row: -1, col: -1 };
 
     for (let i = 0; i < emptyArray4x4.length; i++) {
         for (let j = 0; j < emptyArray4x4[i].length; j++) {
             for (let k = 0; k < emptyArray4x4[i][j].length; k++) {
                 if (emptyArray4x4[i][j][k] === '') {
                     emptyArray4x4[i][j][k] = 'O';
-                    let score = minimax(emptyArray4x4, 2, false); // Set the depth here
+                    let score = minimax(emptyArray4x4, depth, -Infinity, Infinity, false); // Depth set for "Insane" level
                     emptyArray4x4[i][j][k] = ''; // Undo the move
+
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove = { table_no: i, row: j, col: k };
@@ -231,6 +327,8 @@ function computerMove() {
             }
         }
     }
+
+
 
     // Construct the ID based on table_no, row, and col
     const cellId = `${bestMove.table_no}${bestMove.row}${bestMove.col}`;
@@ -248,6 +346,20 @@ function computerMove() {
         cell.style.color = 'white';
         cell.style.fontSize = '20px';
         lastColor = 'blue';
+          // Check for a winner after each move
+                            let winnerExists = checkWinner(emptyArray4x4);
+                            console.log(emptyArray4x4);
+                            if (winnerExists) {
+
+                                console.log("We have a winner!");
+
+                                    showResultMessage('O');
+                                    console.log(turn);
+                                     turn = -1; // Set turn to a value that won't allow further moves
+                                         return; // Display the correct winner
+
+                                // Perform actions when a winner is found (e.g., display a message, end the game, etc.)
+                            }
         turn = 0; // Set turn back to 0 for the human's move
     } else {
         // Cell doesn't exist, handle the error or perform appropriate actions
