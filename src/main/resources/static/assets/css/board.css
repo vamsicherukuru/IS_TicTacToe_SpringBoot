@@ -20,4 +20,26 @@
     margin-top: -160px;
   }
 
+.result-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    display: none;
+    z-index: 9999;
+}
 
+.result-message.show {
+    display: block;
+}
+
+
+#result-text{
+
+    font-size:2em;
+
+}
