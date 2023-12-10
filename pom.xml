@@ -40,6 +40,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+
+		<finalName>is_project_group_9</finalName>
 	</build>
 
 </project>

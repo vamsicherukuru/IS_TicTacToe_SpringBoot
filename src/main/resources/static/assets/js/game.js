@@ -32,7 +32,7 @@ function determineDepth(difficulty) {
         case 'difficult':
             return 1;
         case 'insane':
-            return 3;
+            return 2;
         default:
             return 1;
     }
